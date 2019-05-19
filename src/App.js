@@ -13,6 +13,10 @@ class App extends React.Component {
       mode: 'session',
       sessionTime: 25,
       breakTime: 5,
+      timer: {
+        minutes: 25,
+        seconds: 0,
+      },
       started: false,
     };
   }
@@ -30,12 +34,46 @@ class App extends React.Component {
     this.setState(decrementedTime);
   };
 
-  toggleStart = () => {
+  toggleStart = time => {
+    if (!this.state.started) this.startTimer(time);
+    if (this.state.started);
     this.setState(state => ({ started: !state.started }));
   };
 
   reset = () => {
     this.setState({ mode: 'session', sessionTime: 25, breakTime: 5, started: false });
+  };
+
+  startTimer = () => {
+    let { minutes, seconds } = this.state.timer;
+    const timer = window.setInterval(() => {
+      if (seconds <= 0) {
+        minutes--;
+        seconds = 59;
+        this.setTime(minutes, seconds);
+      } else if (minutes <= 0 && seconds <= 0) {
+        this.stopTimer(timer);
+      } else {
+        if (!this.state.started) this.stopTimer(timer);
+        seconds--;
+        this.setTime(minutes, seconds);
+      }
+    }, 1000);
+  };
+
+  stopTimer = timerid => {
+    window.clearInterval(timerid);
+  };
+
+  setTime = (minutes, seconds) => {
+    const updatedTime = {
+      timer: {
+        minutes,
+        seconds,
+      },
+    };
+    this.setState(updatedTime);
+    console.log(this.state.timer);
   };
 
   render() {
@@ -58,11 +96,9 @@ class App extends React.Component {
             handleDecrement={this.decrement}
           />
         </div>
-        <Timer
-          mode={this.state.mode}
-          time={this.state.mode === 'session' ? this.state.sessionTime : this.state.breakTime}
-        />
+        <Timer mode={this.state.mode} time={this.state.timer} />
         <TimerControls
+          time={this.state.timer}
           started={this.state.started}
           toggleStart={this.toggleStart}
           reset={this.reset}
