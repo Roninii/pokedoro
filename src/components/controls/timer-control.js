@@ -1,11 +1,11 @@
 import React from 'react';
 
-const TimerControls = props => {
+const TimerControls = ({ started, toggleStart, reset }) => {
   return (
     <div style={{ display: `flex`, justifyContent: `center` }}>
-      <button>Play</button>
-      <button>Pause</button>
-      <button>Restart</button>
+      <button onClick={() => toggleStart()}>{started ? 'stop' : 'start'}</button>
+      <button disabled={!started}>pause</button>
+      <button onClick={() => reset()}>reset</button>
     </div>
   );
 };

@@ -13,6 +13,7 @@ class App extends React.Component {
       mode: 'session',
       sessionTime: 25,
       breakTime: 5,
+      started: false,
     };
   }
 
@@ -27,6 +28,14 @@ class App extends React.Component {
     let decrementedTime = {};
     decrementedTime[`${timeMode}Time`] = this.state[`${timeMode}Time`] - 1;
     this.setState(decrementedTime);
+  };
+
+  toggleStart = () => {
+    this.setState(state => ({ started: !state.started }));
+  };
+
+  reset = () => {
+    this.setState({ mode: 'session', sessionTime: 25, breakTime: 5, started: false });
   };
 
   render() {
@@ -53,7 +62,11 @@ class App extends React.Component {
           mode={this.state.mode}
           time={this.state.mode === 'session' ? this.state.sessionTime : this.state.breakTime}
         />
-        <TimerControls />
+        <TimerControls
+          started={this.state.started}
+          toggleStart={this.toggleStart}
+          reset={this.reset}
+        />
       </div>
     );
   }
