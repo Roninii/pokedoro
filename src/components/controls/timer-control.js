@@ -1,11 +1,11 @@
 import React from 'react';
 
-const TimerControls = ({ time, started, toggleStart, reset }) => {
+const TimerControls = ({ mode, time, started, toggleStart, reset }) => {
   return (
     <div style={{ display: `flex`, justifyContent: `center` }}>
       <button
         onClick={() => {
-          toggleStart(time);
+          toggleStart(mode, time);
         }}>
         {started ? 'stop' : 'start'}
       </button>

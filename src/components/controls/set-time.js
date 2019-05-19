@@ -8,7 +8,7 @@ const SetTime = ({ mode, time, increment, decrement }) => {
     <div style={{ display: `flex` }}>
       <Increment mode={mode} increment={increment} />
       <p style={{ display: `inline-block`, margin: `1rem` }} id={`${mode}-length`}>
-        {time}
+        {time.minutes}
       </p>
       <Decrement mode={mode} decrement={decrement} />
     </div>

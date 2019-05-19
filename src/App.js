@@ -11,10 +11,12 @@ class App extends React.Component {
 
     this.state = {
       mode: 'session',
-      sessionTime: 25,
-      breakTime: 5,
-      timer: {
+      sessionTimer: {
         minutes: 25,
+        seconds: 0,
+      },
+      breakTimer: {
+        minutes: 5,
         seconds: 0,
       },
       started: false,
@@ -23,19 +25,21 @@ class App extends React.Component {
 
   increment = timeMode => {
     let incrementedTime = {};
-    incrementedTime[`${timeMode}Time`] = this.state[`${timeMode}Time`] + 1;
+    incrementedTime[`${timeMode}Timer`] = { minutes: 0, seconds: 0 };
+    incrementedTime[`${timeMode}Timer`].minutes = this.state[`${timeMode}Timer`].minutes + 1;
     this.setState(incrementedTime);
   };
 
   decrement = timeMode => {
-    if (this.state[`${timeMode}Time`] <= 0) return;
+    if (this.state[`${timeMode}Timer`].minutes <= 0) return;
     let decrementedTime = {};
-    decrementedTime[`${timeMode}Time`] = this.state[`${timeMode}Time`] - 1;
+    decrementedTime[`${timeMode}Timer`] = { minutes: 0, seconds: 0 };
+    decrementedTime[`${timeMode}Timer`].minutes = this.state[`${timeMode}Timer`].minutes - 1;
     this.setState(decrementedTime);
   };
 
-  toggleStart = time => {
-    if (!this.state.started) this.startTimer(time);
+  toggleStart = (mode, time) => {
+    if (!this.state.started) this.startTimer(mode, time);
     if (this.state.started);
     this.setState(state => ({ started: !state.started }));
   };
@@ -44,19 +48,19 @@ class App extends React.Component {
     this.setState({ mode: 'session', sessionTime: 25, breakTime: 5, started: false });
   };
 
-  startTimer = () => {
-    let { minutes, seconds } = this.state.timer;
-    const timer = window.setInterval(() => {
+  startTimer = (mode, time) => {
+    let { minutes, seconds } = time;
+    const timerInterval = window.setInterval(() => {
       if (seconds <= 0) {
         minutes--;
         seconds = 59;
         this.setTime(minutes, seconds);
       } else if (minutes <= 0 && seconds <= 0) {
-        this.stopTimer(timer);
+        this.stopTimer(timerInterval);
       } else {
-        if (!this.state.started) this.stopTimer(timer);
+        if (!this.state.started) this.stopTimer(timerInterval);
         seconds--;
-        this.setTime(minutes, seconds);
+        this.setTime(mode, minutes, seconds);
       }
     }, 1000);
   };
@@ -65,15 +69,10 @@ class App extends React.Component {
     window.clearInterval(timerid);
   };
 
-  setTime = (minutes, seconds) => {
-    const updatedTime = {
-      timer: {
-        minutes,
-        seconds,
-      },
-    };
+  setTime = (mode, minutes, seconds) => {
+    const updatedTime = {};
+    updatedTime[`${mode}Timer`] = { minutes, seconds };
     this.setState(updatedTime);
-    console.log(this.state.timer);
   };
 
   render() {
@@ -85,20 +84,21 @@ class App extends React.Component {
         <div style={{ display: `flex`, justifyContent: `center` }}>
           <Mode
             mode="session"
-            time={this.state.sessionTime}
+            time={this.state.sessionTimer}
             handleIncrement={this.increment}
             handleDecrement={this.decrement}
           />
           <Mode
             mode="break"
-            time={this.state.breakTime}
+            time={this.state.breakTimer}
             handleIncrement={this.increment}
             handleDecrement={this.decrement}
           />
         </div>
-        <Timer mode={this.state.mode} time={this.state.timer} />
+        <Timer mode={this.state.mode} time={this.state[`${this.state.mode}Timer`]} />
         <TimerControls
-          time={this.state.timer}
+          mode={this.state.mode}
+          time={this.state[`${this.state.mode}Timer`]}
           started={this.state.started}
           toggleStart={this.toggleStart}
           reset={this.reset}
