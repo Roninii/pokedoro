@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Timer = props => {
+const Timer = ({ mode, time }) => {
   return (
     <section>
-      <p>{props.mode}</p>
-      <p>25:00</p>
+      <p>{mode.toUpperCase()}</p>
+      <p>{time}</p>
     </section>
   );
 };

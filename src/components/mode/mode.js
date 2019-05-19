@@ -2,7 +2,7 @@ import React from 'react';
 
 import SetTime from '../controls/set-time';
 
-const Mode = props => {
+const Mode = ({ mode, time, handleIncrement, handleDecrement }) => {
   return (
     <section
       style={{
@@ -11,8 +11,8 @@ const Mode = props => {
         alignItems: `center`,
         margin: `0 1rem`,
       }}>
-      <p id={`${props.mode}-label`}>{props.mode.toUpperCase()}</p>
-      <SetTime mode={props.mode} />
+      <p id={`${mode}-label`}>{mode.toUpperCase()}</p>
+      <SetTime mode={mode} time={time} increment={handleIncrement} decrement={handleDecrement} />
     </section>
   );
 };

@@ -1,10 +1,11 @@
 import React from 'react';
 
-const Increment = props => {
+const Increment = ({ mode, increment }) => {
   return (
     <button
       style={{ display: `inline-block`, transform: `rotate(-90deg)` }}
-      id={`${props.mode}-increment`}>
+      id={`${mode}-increment`}
+      onClick={() => increment(mode)}>
       >
     </button>
   );

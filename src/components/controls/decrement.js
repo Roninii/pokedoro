@@ -1,10 +1,11 @@
 import React from 'react';
 
-const Decrement = props => {
+const Decrement = ({ mode, decrement }) => {
   return (
     <button
       style={{ display: `inline-block`, transform: `rotate(90deg)` }}
-      id={`${props.mode}-decrement`}>
+      id={`${mode}-decrement`}
+      onClick={() => decrement(mode)}>
       >
     </button>
   );
