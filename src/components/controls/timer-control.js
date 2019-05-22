@@ -4,12 +4,15 @@ const TimerControls = ({ mode, time, started, toggleStart, reset }) => {
   return (
     <div style={{ display: `flex`, justifyContent: `center` }}>
       <button
+        id="start_stop"
         onClick={() => {
           toggleStart(mode, time);
         }}>
         {started ? 'stop' : 'start'}
       </button>
-      <button onClick={() => reset()}>reset</button>
+      <button id="reset" onClick={() => reset()}>
+        reset
+      </button>
     </div>
   );
 };

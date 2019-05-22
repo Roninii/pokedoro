@@ -24,6 +24,7 @@ class App extends React.Component {
   }
 
   increment = timeMode => {
+    if (this.state[`${timeMode}Timer`].minutes >= 60) return;
     let incrementedTime = {};
     incrementedTime[`${timeMode}Timer`] = { minutes: 0, seconds: 0 };
     incrementedTime[`${timeMode}Timer`].minutes = this.state[`${timeMode}Timer`].minutes + 1;
@@ -31,7 +32,7 @@ class App extends React.Component {
   };
 
   decrement = timeMode => {
-    if (this.state[`${timeMode}Timer`].minutes <= 0) return;
+    if (this.state[`${timeMode}Timer`].minutes <= 1) return;
     let decrementedTime = {};
     decrementedTime[`${timeMode}Timer`] = { minutes: 0, seconds: 0 };
     decrementedTime[`${timeMode}Timer`].minutes = this.state[`${timeMode}Timer`].minutes - 1;
@@ -45,18 +46,29 @@ class App extends React.Component {
   };
 
   reset = () => {
-    this.setState({ mode: 'session', sessionTime: 25, breakTime: 5, started: false });
+    this.setState({
+      mode: 'session',
+      sessionTimer: {
+        minutes: 25,
+        seconds: 0,
+      },
+      breakTimer: {
+        minutes: 5,
+        seconds: 0,
+      },
+      started: false,
+    });
   };
 
   startTimer = (mode, time) => {
     let { minutes, seconds } = time;
     const timerInterval = window.setInterval(() => {
-      if (seconds <= 0) {
+      if (minutes <= 0 && seconds <= 0) {
+        this.stopTimer(timerInterval);
+      } else if (seconds <= 0) {
         minutes--;
         seconds = 59;
-        this.setTime(minutes, seconds);
-      } else if (minutes <= 0 && seconds <= 0) {
-        this.stopTimer(timerInterval);
+        this.setTime(mode, minutes, seconds);
       } else {
         if (!this.state.started) this.stopTimer(timerInterval);
         seconds--;
@@ -67,6 +79,7 @@ class App extends React.Component {
 
   stopTimer = timerid => {
     window.clearInterval(timerid);
+    this.setState({ started: false });
   };
 
   setTime = (mode, minutes, seconds) => {
@@ -78,9 +91,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <h1>Pokédoro</h1>
-        </header>
+        <h1>Pokédoro</h1>
         <div style={{ display: `flex`, justifyContent: `center` }}>
           <Mode
             mode="session"
