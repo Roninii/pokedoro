@@ -12,8 +12,8 @@ class App extends React.Component {
     this.state = {
       mode: 'session',
       sessionTimer: {
-        minutes: 25,
-        seconds: 0,
+        minutes: 0,
+        seconds: 5,
       },
       breakTimer: {
         minutes: 5,
@@ -64,13 +64,29 @@ class App extends React.Component {
     let { minutes, seconds } = time;
     const timerInterval = window.setInterval(() => {
       if (minutes <= 0 && seconds <= 0) {
-        this.stopTimer(timerInterval);
+        // change the timer mode
+        if (mode === 'session') {
+          this.setState({ mode: 'break' });
+          mode = 'break';
+
+          // clear the interval
+          this.stopTimer(timerInterval);
+          // recall toggle start to re-initiate the timer function with the updated mode
+          this.toggleStart(mode, this.state[`${this.state.mode}Timer`]);
+        }
+        if (mode === 'break') {
+          this.setState({ mode: 'session' });
+          mode = 'session';
+        }
       } else if (seconds <= 0) {
         minutes--;
         seconds = 59;
         this.setTime(mode, minutes, seconds);
       } else {
-        if (!this.state.started) this.stopTimer(timerInterval);
+        if (!this.state.started) {
+          this.stopTimer(timerInterval);
+          return;
+        }
         seconds--;
         this.setTime(mode, minutes, seconds);
       }
